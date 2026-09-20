@@ -15,7 +15,9 @@
     "lint": "eslint \"src/**/*.ts\"",
     "format": "prettier --write \"src/**/*.ts\"",
     "test": "mocha -r ts-node/register \"tests/**/*.test.ts\"",
-    "prepare": "husky"
+    "prepare": "husky",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "repository": {
     "type": "git",
@@ -36,6 +38,7 @@
     "chai": "^4.5.0",
     "eslint": "^10.11.0",
     "eslint-config-prettier": "^10.1.8",
+    "gh-pages": "^6.3.0",
     "husky": "^9.1.7",
     "lint-staged": "^17.5.1",
     "mocha": "^12.0.2",

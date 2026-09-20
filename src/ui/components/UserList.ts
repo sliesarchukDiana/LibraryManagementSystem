@@ -5,13 +5,13 @@ export function createUserList(users: IUser[], onDelete: (id: string) => void): 
   container.className = 'card p-4 shadow-sm';
 
   const title = document.createElement('h4');
-  title.textContent = 'Список пользователей';
+  title.textContent = 'Список користувачів';
   title.className = 'mb-3';
   container.appendChild(title);
 
   if (users.length === 0) {
     const empty = document.createElement('p');
-    empty.textContent = 'Нет добавленных пользователей.';
+    empty.textContent = 'Поки що тут нікого немає.';
     container.appendChild(empty);
     return container;
   }
@@ -28,7 +28,7 @@ export function createUserList(users: IUser[], onDelete: (id: string) => void): 
 
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'btn btn-danger btn-sm';
-    deleteBtn.textContent = 'Удалить';
+    deleteBtn.textContent = 'Видалити';
     deleteBtn.onclick = () => onDelete(user.id);
 
     li.append(info, deleteBtn);

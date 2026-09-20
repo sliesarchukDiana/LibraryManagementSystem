@@ -9,13 +9,13 @@ export function createBookList(
   container.className = 'card p-4 shadow-sm';
 
   const title = document.createElement('h4');
-  title.textContent = 'Список книг';
+  title.textContent = 'Список книжок';
   title.className = 'mb-3';
   container.appendChild(title);
 
   if (books.length === 0) {
     const empty = document.createElement('p');
-    empty.textContent = 'Нет добавленных книг.';
+    empty.textContent = 'Поки що тут пусто.';
     container.appendChild(empty);
     return container;
   }
@@ -37,12 +37,12 @@ export function createBookList(
 
     const borrowBtn = document.createElement('button');
     borrowBtn.className = `btn btn-sm me-2 ${book.isBorrowed ? 'btn-warning' : 'btn-success'}`;
-    borrowBtn.textContent = book.isBorrowed ? 'Вернуть' : 'Взять';
+    borrowBtn.textContent = book.isBorrowed ? 'Повернути' : 'Взяти';
     borrowBtn.onclick = () => onToggleBorrow(book.id);
 
     const deleteBtn = document.createElement('button');
     deleteBtn.className = 'btn btn-danger btn-sm';
-    deleteBtn.textContent = 'Удалить';
+    deleteBtn.textContent = 'Видалити';
     deleteBtn.onclick = () => onDelete(book.id);
 
     actions.append(borrowBtn, deleteBtn);

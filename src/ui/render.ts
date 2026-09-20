@@ -30,7 +30,7 @@ export function renderApp(rootId: string): void {
   initData();
 
   const root = document.getElementById(rootId);
-  if (!root) throw new Error(`Элемент с id "${rootId}" не найден`);
+  if (!root) throw new Error(`Елемент з id "${rootId}" не знайдено`);
   root.innerHTML = '';
 
   const container = document.createElement('div');
@@ -38,7 +38,7 @@ export function renderApp(rootId: string): void {
 
   const header = document.createElement('h2');
   header.className = 'text-center mb-4';
-  header.textContent = 'Управление библиотекой';
+  header.textContent = 'Бібліотека';
 
   const formsRow = document.createElement('div');
   formsRow.className = 'row mb-4 g-4';
@@ -92,11 +92,11 @@ export function renderApp(rootId: string): void {
             book.isBorrowed = false;
             saveData();
             updateLists();
-            showModal('Возврат', `Книга "${book.title}" успешно возвращена.`);
+            showModal('Повернення', `Книжка "${book.title}" успішно повернена.`);
           } else {
             const users = userLibrary.getAll();
             if (users.length === 0) {
-              showModal('Ошибка', 'Нет зарегистрированных пользователей.');
+              showModal('Упс...', 'Немає користувачів.');
               return;
             }
 
@@ -115,8 +115,8 @@ export function renderApp(rootId: string): void {
 
                 if (user.borrowedBooks.length >= 3) {
                   showModal(
-                    'Лимит превышен',
-                    `Пользователь ${user.name} уже взял максимальное количество книг (3).`,
+                    'Полегше, пупс',
+                    `Користувач ${user.name} вже взяв максимум книжок (3).`,
                   );
                   return;
                 }
@@ -125,12 +125,15 @@ export function renderApp(rootId: string): void {
                 book.isBorrowed = true;
                 saveData();
                 updateLists();
-                showModal('Успех', `Книга "${book.title}" выдана пользователю ${user.name}.`);
+                showModal(
+                  'Перемога',
+                  `Книжка "${book.title}" була видана користувачу ${user.name}.`,
+                );
               };
               listGroup.appendChild(btn);
             });
 
-            showModal('Выберите пользователя', listGroup);
+            showModal('Виберіть користувача', listGroup);
           }
         },
       ),
@@ -140,7 +143,10 @@ export function renderApp(rootId: string): void {
       createUserList(userLibrary.getAll(), (id) => {
         const user = userLibrary.find(id);
         if (user && user.borrowedBooks.length > 0) {
-          showModal('Ошибка удаления', 'Нельзя удалить пользователя, пока он не вернул все книги.');
+          showModal(
+            'Упс...',
+            'Не можна видалити користувача поки він не повернув усі взяті книжки',
+          );
           return;
         }
         userLibrary.remove(id);
@@ -162,7 +168,7 @@ export function renderApp(rootId: string): void {
   userCol.appendChild(
     createUserForm((id, name, email) => {
       if (userLibrary.find(id)) {
-        alert('Пользователь с таким ID уже существует');
+        showModal('Помилка', 'Такий вумний кадр як ти вже вибрав цей ID');
         return;
       }
       const newUser = new User(id, name, email);

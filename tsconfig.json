@@ -5,16 +5,19 @@
     "rootDir": "./",
     "outDir": "./dist",
     "strict": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["DOM", "ES2020"]
+    "lib": ["DOM", "ES2020"],
+    "types": ["vite/client", "node", "mocha"]
   },
   "ts-node": {
+    "transpileOnly": true,
     "compilerOptions": {
-      "module": "CommonJS"
+      "module": "CommonJS",
+      "moduleResolution": "node"
     }
   },
-  "include": ["src/**/*", "tests/**/*"]
+  "include": ["src/**/*", "tests/**/*", "vite.config.ts"]
 }

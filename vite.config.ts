@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/LibraryManagementSystem/',
+  base: './',
   server: {
     port: 9000,
     open: true,

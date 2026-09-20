@@ -2,6 +2,7 @@ import { createBookForm } from './components/BookForm';
 import { createUserForm } from './components/UserForm';
 import { createBookList } from './components/BookList';
 import { createUserList } from './components/UserList';
+import { showModal } from './components/Modal';
 import { Library } from '../services/Library';
 import { Storage } from '../services/Storage';
 import { Book } from '../models/Book';
@@ -75,12 +76,61 @@ export function renderApp(rootId: string): void {
           saveData();
           updateLists();
         },
-        (id) => {
-          const book = bookLibrary.find(id);
-          if (book) {
-            book.isBorrowed = !book.isBorrowed;
+        (bookId) => {
+          const book = bookLibrary.find(bookId);
+          if (!book) return;
+
+          if (book.isBorrowed) {
+            const users = userLibrary.getAll();
+            const borrowingUser = users.find((u) => u.borrowedBooks.includes(bookId));
+
+            if (borrowingUser) {
+              borrowingUser.borrowedBooks = borrowingUser.borrowedBooks.filter(
+                (id) => id !== bookId,
+              );
+            }
+            book.isBorrowed = false;
             saveData();
             updateLists();
+            showModal('Возврат', `Книга "${book.title}" успешно возвращена.`);
+          } else {
+            const users = userLibrary.getAll();
+            if (users.length === 0) {
+              showModal('Ошибка', 'Нет зарегистрированных пользователей.');
+              return;
+            }
+
+            const listGroup = document.createElement('div');
+            listGroup.className = 'list-group';
+
+            users.forEach((user) => {
+              const btn = document.createElement('button');
+              btn.className =
+                'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
+              btn.innerHTML = `<span>${user.name}</span> <span class="badge bg-secondary rounded-pill">${user.borrowedBooks.length}/3</span>`;
+
+              btn.onclick = () => {
+                document.querySelector('.modal-backdrop')?.remove();
+                document.querySelector('.modal')?.remove();
+
+                if (user.borrowedBooks.length >= 3) {
+                  showModal(
+                    'Лимит превышен',
+                    `Пользователь ${user.name} уже взял максимальное количество книг (3).`,
+                  );
+                  return;
+                }
+
+                user.borrowedBooks.push(bookId);
+                book.isBorrowed = true;
+                saveData();
+                updateLists();
+                showModal('Успех', `Книга "${book.title}" выдана пользователю ${user.name}.`);
+              };
+              listGroup.appendChild(btn);
+            });
+
+            showModal('Выберите пользователя', listGroup);
           }
         },
       ),
@@ -88,6 +138,11 @@ export function renderApp(rootId: string): void {
 
     userListCol.appendChild(
       createUserList(userLibrary.getAll(), (id) => {
+        const user = userLibrary.find(id);
+        if (user && user.borrowedBooks.length > 0) {
+          showModal('Ошибка удаления', 'Нельзя удалить пользователя, пока он не вернул все книги.');
+          return;
+        }
         userLibrary.remove(id);
         saveData();
         updateLists();
